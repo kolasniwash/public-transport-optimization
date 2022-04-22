@@ -41,6 +41,7 @@ class Producer:
             # TODO
             # TODO
             # TODO
+            {"bootstrap.servers":"PLAINTEXT://localhost:9092, PLAINTEXT://localhost:9093, PLAINTEXT://localhost:9094"}
         }
 
         # If the topic does not already exist, try to create it
@@ -60,7 +61,19 @@ class Producer:
         # the Kafka Broker.
         #
         #
-        logger.info("topic creation kafka integration incomplete - skipping")
+        client = AdminClient(self.broker_properties)
+        if self.topic_name not in client.list_topics():
+            logger.info(f"topic not found, creating topic {self.topic_name}")
+            client.create_topics(
+                [NewTopic(topic=self.topic_name,
+                         num_partitions=self.num_partitions,
+                         num_replicas=self.num_replicas)]
+            )
+            logger.info("topic created successfully")
+        else:
+            logger.info("topic exists - skipping")
+
+        # logger.info("topic creation kafka integration incomplete - skipping")
 
     def time_millis(self):
         return int(round(time.time() * 1000))
