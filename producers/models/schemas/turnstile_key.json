@@ -3,8 +3,7 @@
   "type": "record",
   "name": "turnstile.key",
   "fields": [
-    {
-      "name": "timestamp",
+    {"name": "timestamp",
       "type": "long"
     }
   ]
