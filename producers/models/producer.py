@@ -43,7 +43,7 @@ class Producer:
             # TODO
             # TODO
             "bootstrap.servers":"PLAINTEXT://localhost:9092, PLAINTEXT://localhost:9093, PLAINTEXT://localhost:9094",
-            "schema.registry.url":"http://localhost:8081"
+            # "schema.registry.url":"http://localhost:8081"
         }
 
         # If the topic does not already exist, try to create it
@@ -72,7 +72,7 @@ class Producer:
         client.create_topics(
             [NewTopic(topic=self.topic_name,
                      num_partitions=self.num_partitions,
-                     num_replicas=self.num_replicas)]
+                     replication_factor=self.num_replicas)]
         )
         logger.info("topic created successfully")
 
