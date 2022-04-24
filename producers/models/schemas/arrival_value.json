@@ -1,3 +1,14 @@
 {
-  "TODO": "Complete this Schema! (Make sure to delete this Key/Value Pair!"
+  "namespace": "com.udacity",
+  "type": "record",
+  "name": "arrival.value",
+  "fields": [
+    {"name": "station_id", "type": "int"},
+    {"name": "train_id", "type": "int"},
+    {"name": "direction", "type": "enum", "symbols": ["E", "W", "N", "S"]},
+    {"name": "line", "type": "enum", "symbols": ["blue", "green", "red"]},
+    {"name": "train_status", "type": "enum", "symbols": ["out_of_service", "in_service", "broken_down"]},
+    {"name": "prev_station_id", "type": "int"},
+    {"name": "prev_direction", "type": "enum", "symbols": ["E", "W", "N", "S"]}
+  ]
 }
