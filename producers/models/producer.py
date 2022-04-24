@@ -30,6 +30,7 @@ class Producer:
         self.value_schema = value_schema
         self.num_partitions = num_partitions
         self.num_replicas = num_replicas
+        # self.schema_registry = "http://localhost:8081"
 
         #
         #
@@ -41,7 +42,8 @@ class Producer:
             # TODO
             # TODO
             # TODO
-            {"bootstrap.servers":"PLAINTEXT://localhost:9092, PLAINTEXT://localhost:9093, PLAINTEXT://localhost:9094"}
+            "bootstrap.servers":"PLAINTEXT://localhost:9092, PLAINTEXT://localhost:9093, PLAINTEXT://localhost:9094",
+            "schema.registry.url":"http://localhost:8081"
         }
 
         # If the topic does not already exist, try to create it
@@ -50,8 +52,12 @@ class Producer:
             Producer.existing_topics.add(self.topic_name)
 
         # TODO: Configure the AvroProducer
-        # self.producer = AvroProducer(
-        # )
+        self.producer = AvroProducer(
+            self.broker_properties,
+            default_key_schema=self.key_schema,
+            default_value_schema=self.value_schema,
+            schema_registry=self.schema_registry ##???
+        )
 
     def create_topic(self):
         """Creates the producer topic if it does not already exist"""
@@ -61,19 +67,15 @@ class Producer:
         # the Kafka Broker.
         #
         #
+        logger.info(f"topic not found, creating topic {self.topic_name}")
         client = AdminClient(self.broker_properties)
-        if self.topic_name not in client.list_topics():
-            logger.info(f"topic not found, creating topic {self.topic_name}")
-            client.create_topics(
-                [NewTopic(topic=self.topic_name,
-                         num_partitions=self.num_partitions,
-                         num_replicas=self.num_replicas)]
-            )
-            logger.info("topic created successfully")
-        else:
-            logger.info("topic exists - skipping")
+        client.create_topics(
+            [NewTopic(topic=self.topic_name,
+                     num_partitions=self.num_partitions,
+                     num_replicas=self.num_replicas)]
+        )
+        logger.info("topic created successfully")
 
-        # logger.info("topic creation kafka integration incomplete - skipping")
 
     def time_millis(self):
         return int(round(time.time() * 1000))
@@ -85,7 +87,8 @@ class Producer:
         # TODO: Write cleanup code for the Producer here
         #
         #
-        logger.info("producer close incomplete - skipping")
+        self.producer.flush()
+        logger.info("producer closed")
 
     def time_millis(self):
         """Use this function to get the key for Kafka Events"""
