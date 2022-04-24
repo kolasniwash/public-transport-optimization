@@ -43,7 +43,7 @@ class Producer:
             # TODO
             # TODO
             "bootstrap.servers":"PLAINTEXT://localhost:9092, PLAINTEXT://localhost:9093, PLAINTEXT://localhost:9094",
-            # "schema.registry.url":"http://localhost:8081"
+            "schema.registry.url":"http://localhost:8081"
         }
 
         # If the topic does not already exist, try to create it
@@ -55,8 +55,8 @@ class Producer:
         self.producer = AvroProducer(
             self.broker_properties,
             default_key_schema=self.key_schema,
-            default_value_schema=self.value_schema,
-            schema_registry=self.schema_registry ##???
+            default_value_schema=self.value_schema
+            # schema_registry=self.schema_registry ##???
         )
 
     def create_topic(self):
@@ -68,7 +68,7 @@ class Producer:
         #
         #
         logger.info(f"topic not found, creating topic {self.topic_name}")
-        client = AdminClient(self.broker_properties)
+        client = AdminClient({"bootstrap.servers":"PLAINTEXT://localhost:9092, PLAINTEXT://localhost:9093, PLAINTEXT://localhost:9094"})
         client.create_topics(
             [NewTopic(topic=self.topic_name,
                      num_partitions=self.num_partitions,
