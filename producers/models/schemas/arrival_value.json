@@ -4,12 +4,15 @@
   "name": "arrival.value",
   "fields": [
     {"name": "station_id", "type": "int"},
-    {"name": "train_id", "type": "int"},
-    {"name": "direction", "type": {
-      "name": "direction",
-      "type": "enum",
-      "symbols": ["E", "W", "N", "S"]
-      }
+    {"name": "train_id", "type": "string"},
+    {"name": "direction",
+      "type": ["null",
+        {
+        "name": "direction",
+        "type": "enum",
+        "symbols": ["a", "b"]
+        }
+      ]
     },
     {"name": "line", "type": {
       "name": "line",
@@ -27,13 +30,15 @@
           "broken_down"]
       }
     },
-    {"name": "prev_station_id", "type": "int"},
+    {"name": "prev_station_id", "type": ["null", "int"]},
     {"name": "prev_direction",
-      "type": {
+      "type": ["null",
+        {
         "name": "prev_direction",
         "type": "enum",
-        "symbols": ["E","W", "N", "S"]
-      }
+        "symbols": ["a", "b"]
+        }
+      ]
     }
   ]
 }
