@@ -21,8 +21,8 @@ class Producer:
         topic_name,
         key_schema,
         value_schema=None,
-        num_partitions=1,
-        num_replicas=1,
+        num_partitions=2,
+        num_replicas=2
     ):
         """Initializes a Producer object with basic settings"""
         self.topic_name = topic_name
@@ -42,7 +42,7 @@ class Producer:
             # TODO
             # TODO
             # TODO
-            "bootstrap.servers":"PLAINTEXT://localhost:9092, PLAINTEXT://localhost:9093, PLAINTEXT://localhost:9094",
+            "bootstrap.servers":"PLAINTEXT://localhost:9092", #, PLAINTEXT://localhost:9093, PLAINTEXT://localhost:9094",
             "schema.registry.url":"http://localhost:8081"
         }
 
@@ -68,7 +68,7 @@ class Producer:
         #
         #
         logger.info(f"topic not found, creating topic {self.topic_name}")
-        client = AdminClient({"bootstrap.servers":"PLAINTEXT://localhost:9092, PLAINTEXT://localhost:9093, PLAINTEXT://localhost:9094"})
+        client = AdminClient({"bootstrap.servers":"PLAINTEXT://localhost:9092"})
         client.create_topics(
             [NewTopic(topic=self.topic_name,
                      num_partitions=self.num_partitions,
