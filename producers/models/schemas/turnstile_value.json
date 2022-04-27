@@ -16,7 +16,6 @@
           "green"
         ]
       }
-    },
-    {"name": "num_entries", "type": "int"}
+    }
   ]
 }
