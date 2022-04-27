@@ -1,7 +1,7 @@
 """Creates a turnstile data producer"""
 import logging
 from pathlib import Path
-
+from datetime import datetime
 from confluent_kafka import avro
 
 from models.producer import Producer
@@ -57,13 +57,13 @@ class Turnstile(Producer):
         # of entries that were calculated
         #
         #
-        self.producer.produce(
-            topic=self.topic_name,
-            key=timestamp,
-            value={
-                "station_id": self.station.station_id,
-                "station_name":self.station.name,
-                "line": self.station.color,
-                "num_entries": num_entries
-            }
-        )
+        for i in range(num_entries):
+            self.producer.produce(
+                topic=self.topic_name,
+                key={"timestamp": self.time_millis()},
+                value={
+                    "station_id": self.station.station_id,
+                    "station_name":self.station.name,
+                    "line": self.station.color.name
+                }
+            )
