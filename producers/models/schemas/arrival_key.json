@@ -5,7 +5,8 @@
   "fields": [
     {
       "name": "timestamp",
-      "type": "long"
+      "type": "long",
+      "logicalType": "timestamp-millis"
     }
   ]
 }
