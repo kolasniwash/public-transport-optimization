@@ -15,10 +15,6 @@ class Station(Producer):
     """Defines a single station"""
 
     key_schema = avro.load(f"{Path(__file__).parents[0]}/schemas/arrival_key.json")
-
-    #
-    # TODO: Define this value schema in `schemas/station_value.json, then uncomment the below
-    #
     value_schema = avro.load(f"{Path(__file__).parents[0]}/schemas/arrival_value.json")
 
     def __init__(self, station_id, name, color, direction_a=None, direction_b=None):
@@ -31,17 +27,11 @@ class Station(Producer):
             .replace("'", "")
         )
 
-        #
-        #
-        # TODO: Complete the below by deciding on a topic name, number of partitions, and number of
-        # replicas
-        #
-        #
-        topic_name = "org.chicago.cta.stations.raw"#f"{station_name}" # TODO: Come up with a better topic name
+        topic_name = f"org.chicago.cta.stations.arrivals.{station_name}"
         super().__init__(
             topic_name,
             key_schema=Station.key_schema,
-            value_schema=Station.value_schema, # TODO: Uncomment once schema is defined
+            value_schema=Station.value_schema,
             num_partitions=1,
             num_replicas=1,
         )
@@ -57,21 +47,12 @@ class Station(Producer):
 
     def run(self, train, direction, prev_station_id, prev_direction):
         """Simulates train arrivals at this station"""
-        #
-        #
-        # TODO: Complete this function by producing an arrival message to Kafka
-        #
-        #
+
         logger.info(f"arrival at station {self.station_id}")
         self.producer.produce(
            topic=self.topic_name,
            key={"timestamp": self.time_millis()},
            value={
-               #
-               #
-               # TODO: Configure this
-               #
-               #
                "station_id":self.station_id,
                "train_id": train.train_id,
                "direction": direction,
