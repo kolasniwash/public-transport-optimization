@@ -57,7 +57,7 @@ def configure_connector():
                # TODO
                "incrementing.column.name": "stop_id",
                # TODO
-               "topic.prefix": "kafka-connect-",
+               "topic.prefix": "kafka-connect-raw-",
                # TODO
                "poll.interval.ms": "1000",
            }
