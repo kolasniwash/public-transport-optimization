@@ -5,7 +5,6 @@ import confluent_kafka
 from confluent_kafka import Consumer, OFFSET_BEGINNING
 from confluent_kafka.avro import AvroConsumer
 from confluent_kafka.avro.serializer import SerializerError
-from confluent_kafka.avro.cached_schema_registry_client import CachedSchemaRegistryClient
 from tornado import gen
 
 
@@ -34,32 +33,21 @@ class KafkaConsumer:
         SCHEMA_REGISTRY_URL = 'http://localhost:8081'
         BROKER_URL = 'PLAINTEXT://localhost:9092'
 
+        auto_offset_reset = "latest"
+        if self.offset_earliest:
+            auto_offset_reset = "earliest"
 
         self.broker_properties = {
-            "auto.offset.reset": "earliest" if self.offset_earliest else "latest"
+            "bootstrap.servers": "PLAINTEXT://localhost:9092",
+            "group.id": "org.chicago.cta.consumer_group",
+            "auto.offset.reset": auto_offset_reset
         }
 
-        # TODO: Create the Consumer, using the appropriate type.
         if is_avro is True:
-            self.broker_properties = {
-                'schema.registry.url': SCHEMA_REGISTRY_URL,
-                'bootstrap.servers': BROKER_URL,
-                'group.id': f"self.topic_name_pattern",
-                "auto.offset.reset": self.broker_properties["auto.offset.reset"]
-            }
+            self.broker_properties["schema.registry.url"] = "http://localhost:8081"
             self.consumer = AvroConsumer(self.broker_properties)
         else:
-            self.consumer = Consumer(
-                {
-                    "bootstrap.servers": BROKER_URL,
-                    "group.id": 0,
-                    "default.topic.config": {
-                        "auto.offset.reset": self.broker_properties["auto.offset.reset"]
-                    },
-                    "enable.auto.offset.store": True,
-                    "enable.auto.commit": True
-                 }
-            )
+            self.consumer = Consumer(self.broker_properties)
 
         self.consumer.subscribe(
             [self.topic_name_pattern],
@@ -75,7 +63,7 @@ class KafkaConsumer:
                 partition.offset=OFFSET_BEGINNING
 
         logger.info("partitions assigned for %s", self.topic_name_pattern)
-        self.consumer.assign(partitions)
+        consumer.assign(partitions)
 
     async def consume(self):
         """Asynchronously consumes data from kafka topic"""
